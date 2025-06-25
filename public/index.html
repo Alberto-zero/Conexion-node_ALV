@@ -7,13 +7,12 @@
     <title>Document</title>
 </head>
 <body>
-    <a href="/obtenerUsuario">Obtener Usuarios</a>
+    
 
     <form action="/agregarUsuario" method="post">
     <input type="text" name="nombre" placeholder="Nombre de Usuario">
     <input type="submit" value="Agregar Usuario">
-    
-  </form>
+    </form>
 
    
    <br>
@@ -22,8 +21,19 @@
     <input type="text" name="id" placeholder="Ingresa el id">
     <input type="submit" value="Borrar Usuario">
    </form>
+    <br>
+    <br>
 
+    <form action="/actualizarUsuario" method="post">
+    <input type="text" name="id" placeholder="Ingresa el id">
+    <input type="text" name="nombre" placeholder="Nuevo Nombre">
+    <input type="submit" value="Actualizar Usuario">
+    </form>
+
+    <br>
+    <br>
     
+    <a href="/obtenerUsuario">Obtener Usuario</a>
 
 </body>
 </html>
