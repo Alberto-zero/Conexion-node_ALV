@@ -35,8 +35,8 @@ app.post('/agregarUsuario',(req,res)=>{
         });
 })
 //puerto de escucha del servidor
-app.listen(5500,()=>{
-    console.log('Servidor escuchando en el puerto 5500')
+app.listen(5501,()=>{
+    console.log('Servidor escuchando en el puerto 5501')
 })
 
 //funcion consultar               abajo funcion flecha  
@@ -49,7 +49,7 @@ app.get('/obtenerUsuario',(req,res)=>{
         respuesta.forEach(user => {
             i++;
             //*= es un operacion de iteracion = x=x+5 o que es lo mismo x+=5
-            userHTML+= `<tr><td>${i}</td><td>${user.nombre}</td></tr>`;
+            userHTML+= `<tr><td>${user.id}</td><td>${user.nombre}</td></tr>`;
         });
 
         return res.send(`<table>
@@ -82,8 +82,8 @@ app.post('/borrarUsuario', (req, res) => {
 });
 
 app.post('/actualizarUsuario', (req, res) => {
-    const id = req.body.id; // El ID del usuario a actualizar viene en el cuerpo de la solicitud
-    const nuevoNombre = req.body.nombre; // El nuevo nombre del usuario viene en el cuerpo de la solicitud
+    const id = req.body.id; 
+    const nuevoNombre = req.body.nombre; 
 
     con.query('UPDATE usuario SET nombre = ? WHERE id = ?', [nuevoNombre, id], (err, resultado, fields) => {
         if (err) {
