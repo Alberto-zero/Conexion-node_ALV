@@ -23,16 +23,60 @@ app.use(express.static('public'))
 app.post('/agregarUsuario',(req,res)=>{
         let nombre=req.body.nombre
         let id=req.body.id
-
-        con.query('INSERT INTO usuario (id, nombre) VALUES (?, ?)', [id, nombre], (err, respuesta, fields) => {
+        if(nombre==""){
+            return res.send(`
+            <script>
+                alert("Faltan datos");
+                window.history.back(); // regresa a la página anterior
+            </script>
+            `);
+        }else{
+            con.query('INSERT INTO usuario (id, nombre) VALUES (?, ?)', [id, nombre], (err, respuesta, fields) => {
             if (err) {
                 console.log("Error al conectar", err);
                 //mandamos un mensaje de error al cliente 500 (error interno del servidor)
                 return res.status(500).send("Error al conectar");
             }
             //concatenar una variable con el nombre del usuario
-            return res.send(`<h1>Nombre:</h1> ${nombre}`);
+            return res.send(
+                `<html>
+                    <head>
+                    <style>
+                        body {
+                            min-height: 100vh;
+                            margin: 0;
+                            padding: 40px 0;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            background: linear-gradient(135deg, #1f9bcf 0%, #4bbf73 100%);
+                            color: #fff;
+                            font-family: 'Nunito Sans', Arial, sans-serif;
+                            font-size: 18px;
+                            font-weight: 600;}
+                            input[type="text"], input[type="submit"] {
+                            margin: 8px 0;
+                            padding: 10px;
+                            border-radius: 6px;
+                            border: none;
+                            width: 100%;
+                            box-sizing: border-box;
+                        }
+                        h1 {
+                            color: #fff;
+                            font-size: 30px;
+                            text-align: center;
+                        }
+                    </style>
+                    </head>
+                    <body>
+                    <h1>Nombre: ${nombre}</h1>
+                    </body>
+                </html>`
+            );
         });
+        }
+        
 })
 //puerto de escucha del servidor
 app.listen(5501,()=>{
@@ -49,7 +93,49 @@ app.get('/obtenerUsuario',(req,res)=>{
         respuesta.forEach(user => {
             i++;
             //*= es un operacion de iteracion = x=x+5 o que es lo mismo x+=5
-            userHTML+= `<tr><td>${user.id}</td><td>${user.nombre}</td></tr>`;
+            userHTML+= `
+                    <html>
+                    <head>
+                    <style>
+                        body {
+                            min-height: 100vh;
+                            margin: 0;
+                            padding: 40px 0;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            background: linear-gradient(135deg, #1f9bcf 0%, #4bbf73 100%);
+                            color: #fff;
+                            font-family: 'Nunito Sans', Arial, sans-serif;
+                            font-size: 18px;
+                            font-weight: 600;}
+                            input[type="text"], input[type="submit"] {
+                            margin: 8px 0;
+                            padding: 10px;
+                            border-radius: 6px;
+                            border: none;
+                            width: 100%;
+                            box-sizing: border-box;
+                        }
+                        tr {
+                            background: linear-gradient(135deg, #1f9bcf 0%, #4bbf73 100%);
+                            color: white;
+                        }
+
+                        td {
+                            padding: 10px 15px;
+                            border: 1px solid #e0e0e0;
+                            color: white;
+                            font-family: Arial, sans-serif;
+                            font-size: 14px;
+                        }
+                    </style>
+                    </head>
+                    <body>
+                    <tr><td>${user.id}</td><td>${user.nombre}</td></tr>
+                    </body>
+                </html>
+            `;
         });
 
         return res.send(`<table>
@@ -68,7 +154,15 @@ app.get('/obtenerUsuario',(req,res)=>{
 app.post('/borrarUsuario', (req, res) => {
     const id = req.body.id; // El ID del usuario a eliminar viene en el cuerpo de la solicitud
     console.log("hola")
-    con.query('DELETE FROM usuario WHERE id = ?', [id], (err, resultado, fields) => {
+    if(id=="" || isNaN(id)){
+        return res.send(`
+            <script>
+                alert("Faltan datos");
+                window.history.back(); // regresa a la página anterior
+            </script>
+        `);
+    }else{
+        con.query('DELETE FROM usuario WHERE id = ?', [id], (err, resultado, fields) => {
 
         if (err) {
             console.error('Error al borrar el usuario:', err);
@@ -77,14 +171,58 @@ app.post('/borrarUsuario', (req, res) => {
         if (resultado.affectedRows === 0) {
             return res.status(404).send("Usuario no encontrado");
         }
-        return res.send(`Usuario con ID ${id} borrado correctamente`);
-    });
+        return res.send(`
+            <html>
+                    <head>
+                    <style>
+                        body {
+                            min-height: 100vh;
+                            margin: 0;
+                            padding: 40px 0;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            background: linear-gradient(135deg, #1f9bcf 0%, #4bbf73 100%);
+                            color: #fff;
+                            font-family: 'Nunito Sans', Arial, sans-serif;
+                            font-size: 18px;
+                            font-weight: 600;}
+                            input[type="text"], input[type="submit"] {
+                            margin: 8px 0;
+                            padding: 10px;
+                            border-radius: 6px;
+                            border: none;
+                            width: 100%;
+                            box-sizing: border-box;
+                        }
+                        h1 {
+                            color: red;
+                            font-size: 30px;
+                            text-align: center;
+                        }
+                    </style>
+                    </head>
+                    <body>
+                    <h1>Usuario con ID ${id} borrado correctamente</h1>
+                    </body>
+                </html>`);
+        });
+    }
+    
 });
 
 app.post('/actualizarUsuario', (req, res) => {
     const id = req.body.id; 
     const nuevoNombre = req.body.nombre; 
 
+    if(nuevoNombre=="" || isNaN(id)){
+        return res.send(`
+            <script>
+                alert("Faltan datos");
+                window.history.back(); // regresa a la página anterior
+            </script>
+        `);
+    }else{
     con.query('UPDATE usuario SET nombre = ? WHERE id = ?', [nuevoNombre, id], (err, resultado, fields) => {
         if (err) {
             console.error('Error al actualizar el usuario:', err);
@@ -93,8 +231,43 @@ app.post('/actualizarUsuario', (req, res) => {
         if (resultado.affectedRows === 0) {
             return res.status(404).send("Usuario no encontrado");
         }
-        return res.send(`Usuario con ID ${id} actualizado correctamente`);
+        return res.send(`
+                <html>
+                    <head>
+                    <style>
+                        body {
+                            min-height: 100vh;
+                            margin: 0;
+                            padding: 40px 0;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            background: linear-gradient(135deg, #1f9bcf 0%, #4bbf73 100%);
+                            color: #fff;
+                            font-family: 'Nunito Sans', Arial, sans-serif;
+                            font-size: 18px;
+                            font-weight: 600;}
+                            input[type="text"], input[type="submit"] {
+                            margin: 8px 0;
+                            padding: 10px;
+                            border-radius: 6px;
+                            border: none;
+                            width: 100%;
+                            box-sizing: border-box;
+                        }
+                        h1 {
+                            color: #fff;
+                            font-size: 30px;
+                            text-align: center;
+                        }
+                    </style>
+                    </head>
+                    <body>
+                    <h1>Usuario con ID ${id} actualizado correctamente</h1>
+                    </body>
+                </html>`);
     });
+    }
 });
 
 
