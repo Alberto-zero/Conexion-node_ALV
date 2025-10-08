@@ -79,8 +79,8 @@ app.post('/agregarUsuario',(req,res)=>{
         
 })
 //puerto de escucha del servidor
-app.listen(5501,()=>{
-    console.log('Servidor escuchando en el puerto 5501')
+app.listen(3306,()=>{
+    console.log('Servidor escuchando en el puerto 3306')
 })
 
 //funcion consultar               abajo funcion flecha  
