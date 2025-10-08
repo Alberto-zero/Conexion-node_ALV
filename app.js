@@ -4,10 +4,12 @@ const mysql= require("mysql2")
 var bodyParser=require('body-parser')
 var app=express()
 var con=mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'n0m3l0',
-    database:'5IV8'
+    host: process.env.DB_HOST,  // NO debe ser 'localhost'
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+    ssl: { rejectUnauthorized: true }
 })
 con.connect();
 //crud create, read, update, delete
